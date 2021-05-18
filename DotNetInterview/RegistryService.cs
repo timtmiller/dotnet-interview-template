@@ -25,7 +25,7 @@ namespace DotNetInterview
         public bool CheckIfInstalled(string softwareName)
         {
             // TODO: Implement this method to check if the given software name
-            // can be found as an installed application in the registry.
+            // can be found as an installed application in the system registry.
 
             // The search should be case insensitive and should
             // include partial matches.
