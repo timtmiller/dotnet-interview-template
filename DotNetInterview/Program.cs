@@ -18,7 +18,7 @@ namespace DotNetInterview
                 builder.AddConsole();
             });
 
-            // TODO: Register ApiServer, RegistryService, and SoftwareReporter
+            // TODO: Register ApiService, RegistryService, and SoftwareReporter
             // in the ServiceCollection.
 
             var container = serviceCollection.BuildServiceProvider();
