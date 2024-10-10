@@ -18,17 +18,16 @@ namespace DotNetInterview
                 builder.AddConsole();
             });
 
-            // TODO: Register ApiService, RegistryService, and SoftwareReporter
-            // in the ServiceCollection.
+            // register our services in the dependency container
+			serviceCollection.AddSingleton<IApiService, ApiService>();
+            serviceCollection.AddSingleton<IRegistryService, RegistryService>();
+            serviceCollection.AddSingleton<ISoftwareReporter, SoftwareReporter>();
 
             var container = serviceCollection.BuildServiceProvider();
 
-
-            // TODO: Retrieve an instance of SoftwareReporter from the
-            // dependency injection container.
-
-            // TODO: Call ReportSoftwareInstallationStatus method, using "Syncro"
-            // as the software name.
+            // search for the software key in the registry and report whether it was found
+            var softwareReporter = container.GetRequiredService<ISoftwareReporter>();
+            await softwareReporter.ReportSoftwareInstallationStatus("Syncro");
 
             Console.WriteLine("\nPress any key to exit.");
             Console.ReadKey();

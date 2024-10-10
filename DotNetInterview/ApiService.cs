@@ -1,14 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace DotNetInterview
 {
     public interface IApiService
     {
+        // report the result of the registry search through the API
         Task<int> SendInstalledSoftware(string softwareName, bool isInstalled);
     }
 
@@ -18,9 +16,10 @@ namespace DotNetInterview
 
         public ApiService(ILogger<ApiService> logger)
         {
-            _logger = logger;
+	        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        // report the result of the registry search through the API
         public async Task<int> SendInstalledSoftware(string softwareName, bool isInstalled)
         {
             _logger.LogInformation("Sending installation status for {softwareName}.  Installed: {isInstalled}",

@@ -1,25 +1,40 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DotNetInterview
 {
     public interface ISoftwareReporter
     {
-        Task ReportSoftwareInstallationStatus(string softwareName);
+		// determines whether software with the given name has been installed
+		// on the current system and reports the result through the api service
+		Task ReportSoftwareInstallationStatus(string softwareName);
     }
 
     public class SoftwareReporter : ISoftwareReporter
     {
-        // TODO: Finish implementing this class so the unit tests
-        // in SoftwareReporterTests are passing.
+        private readonly IRegistryService _registryService;
+        private readonly IApiService _apiService;
+		private readonly ILogger<SoftwareReporter> _logger;
 
-        public Task ReportSoftwareInstallationStatus(string softwareName)
+        public SoftwareReporter(IRegistryService registryService, IApiService apiService, ILogger<SoftwareReporter> logger)
         {
-            throw new NotImplementedException();
+            _registryService = registryService ?? throw new ArgumentNullException(nameof(registryService));
+            _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        // determines whether software with the given name has been installed
+        // on the current system and reports the result through the api service
+        public async Task ReportSoftwareInstallationStatus(string softwareName)
+        {
+            if (String.IsNullOrEmpty(softwareName) || (softwareName.Trim() == String.Empty)) throw new ArgumentNullException(nameof(softwareName));
+
+            // check whether a key for the software is found in the registry and report result through the api
+			bool isInstalled = _registryService.CheckIfInstalled(softwareName);
+            _logger.LogInformation($"Result of searching registry for software {softwareName}: {isInstalled}");
+
+            await _apiService.SendInstalledSoftware(softwareName, isInstalled);
         }
     }
 }
