@@ -6,16 +6,16 @@ namespace DotNetInterview
 {
     public interface ISoftwareReporter
     {
-		// determines whether software with the given name has been installed
-		// on the current system and reports the result through the api service
-		Task ReportSoftwareInstallationStatus(string softwareName);
+        // determines whether software with the given name has been installed
+        // on the current system and reports the result through the api service
+        Task ReportSoftwareInstallationStatus(string softwareName);
     }
 
     public class SoftwareReporter : ISoftwareReporter
     {
         private readonly IRegistryService _registryService;
         private readonly IApiService _apiService;
-		private readonly ILogger<SoftwareReporter> _logger;
+        private readonly ILogger<SoftwareReporter> _logger;
 
         public SoftwareReporter(IRegistryService registryService, IApiService apiService, ILogger<SoftwareReporter> logger)
         {
@@ -31,7 +31,7 @@ namespace DotNetInterview
             if (String.IsNullOrEmpty(softwareName) || (softwareName.Trim() == String.Empty)) throw new ArgumentNullException(nameof(softwareName));
 
             // check whether a key for the software is found in the registry and report result through the api
-			bool isInstalled = _registryService.CheckIfInstalled(softwareName);
+            bool isInstalled = _registryService.CheckIfInstalled(softwareName);
             _logger.LogInformation($"Result of searching registry for software {softwareName}: {isInstalled}");
 
             await _apiService.SendInstalledSoftware(softwareName, isInstalled);

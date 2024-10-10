@@ -16,7 +16,7 @@ namespace DotNetInterview
 
         public ApiService(ILogger<ApiService> logger)
         {
-	        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // report the result of the registry search through the API
