@@ -28,13 +28,25 @@ namespace DotNetInterview
         // on the current system and reports the result through the api service
         public async Task ReportSoftwareInstallationStatus(string softwareName)
         {
-            if (String.IsNullOrEmpty(softwareName) || (softwareName.Trim() == String.Empty)) throw new ArgumentNullException(nameof(softwareName));
+            if (string.IsNullOrEmpty(softwareName) || (softwareName.Trim() == String.Empty)) throw new ArgumentNullException(nameof(softwareName));
 
             // check whether a key for the software is found in the registry and report result through the api
-            bool isInstalled = _registryService.CheckIfInstalled(softwareName);
-            _logger.LogInformation($"Result of searching registry for software {softwareName}: {isInstalled}");
+            bool isInstalled;
+            string error;
+            try
+            {
+                isInstalled = _registryService.CheckIfInstalled(softwareName);
+                error = null;
+                _logger.LogInformation($"Result of searching registry for software {softwareName}: {isInstalled}");
 
-            await _apiService.SendInstalledSoftware(softwareName, isInstalled);
+            }
+            catch (Exception ex)
+            {
+                isInstalled = false;
+                error = $"An error occurred searching for the software key: {ex.Message}";
+            }
+
+            await _apiService.SendInstalledSoftware(softwareName, isInstalled, error);
         }
     }
 }

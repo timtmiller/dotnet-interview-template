@@ -22,22 +22,31 @@ namespace DotNetInterview
         // searches the registry for a software key matching the specified name
         public bool CheckIfInstalled(string softwareName)
         {
-            if (String.IsNullOrEmpty(softwareName)) throw new ArgumentNullException(nameof(softwareName));
+            if (string.IsNullOrEmpty(softwareName)) throw new ArgumentNullException(nameof(softwareName));
             softwareName = softwareName.Trim();
             if (softwareName == String.Empty) throw new ArgumentNullException(nameof(softwareName));
 
-            // look for software key under current user key
-            if (IsSoftwareKeyFound(Registry.CurrentUser, softwareName))
-                return true;
+            try
+            {
+                // look for software key under current user key
+                if (IsSoftwareKeyFound(Registry.CurrentUser, softwareName))
+                    return true;
 
-            // if not found, look for software key under local machine key
-            _logger.LogInformation("Searching local machine registry entries");
-            return IsSoftwareKeyFound(Registry.LocalMachine, softwareName);
+                // if not found, look for software key under local machine key
+                return IsSoftwareKeyFound(Registry.LocalMachine, softwareName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred searching for the key {softwareName}");
+                throw;
+            }
         }
 
         // returns whether a software key matching the specified name was found under the specified top-level key
         private bool IsSoftwareKeyFound(RegistryKey key, string softwareName)
         {
+            _logger.LogInformation($"Searching registry entries under {key.Name}");
+
             using (RegistryKey subKey = key.OpenSubKey("SOFTWARE"))
             {
                 if (subKey != null)

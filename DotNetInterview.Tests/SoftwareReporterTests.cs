@@ -67,7 +67,7 @@ namespace DotNetInterview.Tests
             await _softwareReporter.ReportSoftwareInstallationStatus("Syncro");
 
             // Verify
-            _apiMock.Verify(x => x.SendInstalledSoftware("Syncro", false));
+            _apiMock.Verify(x => x.SendInstalledSoftware("Syncro", false, null));
         }
 
         [TestMethod]
@@ -80,7 +80,7 @@ namespace DotNetInterview.Tests
             await _softwareReporter.ReportSoftwareInstallationStatus("Syncro");
 
             // Verify
-            _apiMock.Verify(x => x.SendInstalledSoftware("Syncro", true));
+            _apiMock.Verify(x => x.SendInstalledSoftware("Syncro", true, null));
         }
     }
 }
